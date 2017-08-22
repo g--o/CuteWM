@@ -1,0 +1,6 @@
+TODOs
+==================================
+
+* Repair left click re-stacking.
+* Change cursor.
+* Add GTK+ support.

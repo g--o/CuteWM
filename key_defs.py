@@ -1,0 +1,2 @@
+
+LEFT_CLICK = 1
