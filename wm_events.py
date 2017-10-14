@@ -50,19 +50,16 @@ class EventHandler(object):
             Xlib.X.NONE,
             Xlib.X.NONE,
             None)
-        window.grab_button(LEFT_CLICK, 0, True,
-            Xlib.X.ButtonReleaseMask | Xlib.X.ButtonPressMask,
-            Xlib.X.GrabModeAsync,
-            Xlib.X.GrabModeAsync,
+        window.grab_button(key_bindings.FOCUS_BUTTON, 0, True,
+            Xlib.X.ButtonPressMask,
+            Xlib.X.GrabModeSync,
+            Xlib.X.GrabModeSync,
             Xlib.X.NONE,
             Xlib.X.NONE,
             None)
 
     def handle_map_request(self, event):
         event.window.map()
-        # if window is not focused:
-        # event.window.ungrab(LEFT_CLICK, 0)
-        # else
         self.grab_window_events(event.window)
 
     def handle_mapping_notify(self, event):
@@ -76,9 +73,10 @@ class EventHandler(object):
             self.wm.handle_window_drag(event.window, event.root_x, event.root_y)
 
     def handle_mouse_press(self, event):
-        if event.detail == LEFT_CLICK:
-            # Click: raise window
+        if event.detail == key_bindings.FOCUS_BUTTON:
+            # focus: raise window
             event.window.configure(stack_mode=Xlib.X.Above)
+            self.wm.display.allow_events(Xlib.X.ReplayPointer, event.time)
 
     def handle_mouse_release(self, event):
         self.wm.drag_window = None

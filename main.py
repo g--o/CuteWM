@@ -13,7 +13,7 @@ import os
 import wm_core
 from wm_common import *
 
-SESSION_INIT_COMMAND = ["sh", "/home/nir/Desktop/DesktopEnvironment/mine/user/session_init.sh"]
+SESSION_INIT_COMMAND = ["sh", os.path.dirname(__file__) + "/user/session_init.sh"]
 
 def main():
     try:
