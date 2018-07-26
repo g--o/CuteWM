@@ -51,8 +51,8 @@ def system(command):
             # Error in child process.
             print >> sys.stderr, 'Error in child process:'
             traceback.print_exc()
-        except:
-            pass
+        except e:
+            print("Failed to launch " + command[0])
         sys.exit(1)
 
 def getMask(btId):

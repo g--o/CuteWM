@@ -28,16 +28,25 @@ class CuteWM(object):
             raise NoUnmanagedScreens()
         self.display.set_error_handler(self.x_error_handler)
 
-    def handle_window_drag(self, window, root_x, root_y):
+    def setDragWindow(self, window, root_x, root_y):
         if self.drag_window is None:
-            # Start drag
             self.drag_window = window
             geo = self.drag_window.get_geometry()
             self.drag_offset = geo.x - root_x, geo.y - root_y
-        else:
-            # Continue drag
+
+    def resizeWindow(self, window, root_x, root_y):
+        if self.drag_window:
+            geo = self.drag_window.get_geometry()
+            self.drag_window.configure(width=max(1, root_x - geo.x), height=max(1, root_y - geo.y))
+
+    def dragWindow(self, window, root_x, root_y):
+        if self.drag_window:
             x, y = self.drag_offset
             self.drag_window.configure(x=x + root_x, y=y + root_y)
+
+    def maxWindow(self, window):
+        s = self.display.screen()
+        window.configure(width=s.width_in_pixels, height = s.height_in_pixels)
 
     def x_error_handler(self, err, request):
         print >> sys.stderr, 'X protocol error: {0}'.format(err)

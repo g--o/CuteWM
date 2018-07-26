@@ -57,6 +57,14 @@ class EventHandler(object):
             Xlib.X.NONE,
             Xlib.X.NONE,
             None)
+        window.grab_button(key_bindings.RESIZE_BUTTON,
+            key_bindings.MOD_KEY & ~RELEASE_MODIFIER, True,
+            Xlib.X.ButtonMotionMask | Xlib.X.ButtonReleaseMask,
+            Xlib.X.GrabModeAsync,
+            Xlib.X.GrabModeAsync,
+            Xlib.X.NONE,
+            Xlib.X.NONE,
+            None)
 
     def handle_map_request(self, event):
         event.window.map()
@@ -67,10 +75,17 @@ class EventHandler(object):
 
     def handle_mouse_motion(self, event):
         '''
-        Click & drag to move window.
+        Click & drag to move/resize window.
         '''
-        if event.state & getMask(key_bindings.GRAB_BUTTON):
-            self.wm.handle_window_drag(event.window, event.root_x, event.root_y)
+        isGrab = event.state & getMask(key_bindings.GRAB_BUTTON)
+        isResize = event.state & getMask(key_bindings.RESIZE_BUTTON)
+
+        if (isGrab or isResize):
+            self.wm.setDragWindow(event.window, event.root_x, event.root_y)
+            if isGrab:
+                self.wm.dragWindow(event.window, event.root_x, event.root_y)
+            elif isResize:
+                self.wm.resizeWindow(event.window, event.root_x, event.root_y)
 
     def handle_mouse_press(self, event):
         if event.detail == key_bindings.FOCUS_BUTTON:
@@ -82,9 +97,13 @@ class EventHandler(object):
         self.wm.drag_window = None
 
     def handle_key_press(self, event):
-        if (event.state & key_bindings.MOD_KEY) and (event.detail in self.enter_codes):
-            # Alt+Enter: start xterm
-            system(XTERM_COMMAND)
+        if (event.state & key_bindings.MOD_KEY):
+            if (event.detail in self.enter_codes): # Alt+Enter: start xterm
+                system(XTERM_COMMAND)
+            elif (event.detail == MAX_KEY):
+                pass # @TODO: add maximize
+            else:
+                ev.window.circulate(X.RaiseLowest)
 
     def redirect_screen_events(self, screen_id):
         '''
