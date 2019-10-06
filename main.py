@@ -12,14 +12,13 @@ import os
 
 import wm_core
 from wm_common import *
-
-SESSION_INIT_COMMAND = ["sh", os.path.dirname(__file__) + "/user/session_init.sh"]
+from wm_config import *
 
 def main():
     try:
         wm = wm_core.CuteWM()
     except NoUnmanagedScreens:
-        print >> sys.stderr, 'No unmanaged screens found'
+        Logger.err('No unmanaged screens found')
         return 2
 
     try:

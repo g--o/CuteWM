@@ -30,7 +30,7 @@ class EventHandler(object):
                 handler(event)
             else:
                 # we can't handle the event. log it.
-                print 'unhandled event: {event}'.format(event=event)
+                print('unhandled event: {event}'.format(event=event))
 
     def get_event_dispatch_table(self):
         return self.event_dispatch_table
@@ -77,8 +77,8 @@ class EventHandler(object):
         '''
         Click & drag to move/resize window.
         '''
-        isGrab = event.state & getMask(key_bindings.GRAB_BUTTON)
-        isResize = event.state & getMask(key_bindings.RESIZE_BUTTON)
+        isGrab = event.state & get_mask(key_bindings.GRAB_BUTTON)
+        isResize = event.state & get_mask(key_bindings.RESIZE_BUTTON)
 
         if (isGrab or isResize):
             self.wm.setDragWindow(event.window, event.root_x, event.root_y)
@@ -130,7 +130,7 @@ class EventHandler(object):
                 Xlib.X.GrabModeAsync)
         # Find all existing windows.
         for window in root_window.query_tree().children:
-            print 'Grabbing mouse motion events for window {0}'.format(window)
+            Logger.err('Grabbing mouse motion events for window {0}'.format(window))
             self.grab_window_events(window)
         return True
 

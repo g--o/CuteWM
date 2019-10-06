@@ -7,7 +7,7 @@ class CuteWM(object):
     def __init__(self):
         # initialize members
         if Xlib.__version__ < REQUIRED_XLIB_VERSION:
-            print >> sys.stderr, 'Xlib version 0.14 is required, {ver} was found'.format(ver='.'.join(str(i) for i in Xlib.__version__))
+            Logger.err('Xlib version 0.14 is required, {ver} was found'.format(ver='.'.join(str(i) for i in Xlib.__version__)))
             raise InsufficientXlibVersion()
         self.display, self.appname, self.resource_database, self.args = Xlib.rdb.get_display_opts(Xlib.rdb.stdopts)
         self.drag_window = None
@@ -20,7 +20,7 @@ class CuteWM(object):
             os.environ['DISPLAY'] = self.display.get_display_name()
 
         # init screens to be managed
-        for screen_id in xrange(0, self.display.screen_count()):
+        for screen_id in range(0, self.display.screen_count()):
             if self.event_handler.redirect_screen_events(screen_id):
                 self.screens.append(screen_id)
         # check if no screens has been found
@@ -49,7 +49,7 @@ class CuteWM(object):
         window.configure(width=s.width_in_pixels, height = s.height_in_pixels)
 
     def x_error_handler(self, err, request):
-        print >> sys.stderr, 'X protocol error: {0}'.format(err)
+        Logger.err('X protocol error: {0}'.format(err))
 
     def handle_event(self):
         '''
@@ -59,7 +59,7 @@ class CuteWM(object):
             # fetch event
             event = self.display.next_event()
         except Xlib.error.ConnectionClosedError:
-            print >> sys.stderr, 'Display connection closed by server'
+            Logger.err('Display connection closed by server')
             raise KeyboardInterrupt
 
         self.event_handler.handle(event)

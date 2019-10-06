@@ -9,6 +9,8 @@ MAX_EXCEPTIONS = 25
 XTERM_COMMAND = ['/usr/bin/xterm']
 RELEASE_MODIFIER = Xlib.X.AnyModifier << 1
 
+## system related
+
 def child_clear():
     '''
     Clears all parent's stuff
@@ -20,7 +22,7 @@ def child_clear():
     maxfd = resource.getrlimit(resource.RLIMIT_NOFILE)[1]
     if maxfd == resource.RLIM_INFINITY:
         maxfd = 1024
-    for fd in xrange(maxfd):
+    for fd in range(maxfd):
         try:
             os.close(fd)
         except OSError:
@@ -55,6 +57,14 @@ def system(command):
             print("Failed to launch " + command[0])
         sys.exit(1)
 
-def getMask(btId):
+def get_mask(btId):
     BASE_POWER = 7
     return pow(2, BASE_POWER + btId)
+
+## logger
+
+class Logger:
+    def log(msg):
+        print("[CuteWM] " + msg)
+    def err(msg):
+        print >> sys.stderr, msg
